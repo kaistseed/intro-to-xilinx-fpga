@@ -1,5 +1,4 @@
 # Introduction to Vivado and PYNQ Framework
-----------------------------------------------------------------------------------------------------------------------------------------
 > <div align="justify"> This guide will help you to familiarize with Xilinx Vivado environment which is used to develop an FPGA-based project on Xilinx FPGA and System on Chip (SoC) boards. This tutorial also gives a basic introduction to the PYNQ framework which is an open-source project from Xilinx that helps the designers deploy their design easily by providing python libraries and environment to control the behavior of programmable logic (PL) and processing system (PS). </div>
 
 
@@ -24,8 +23,9 @@
 ## :mag: Background
 
 ### Xilinx Vivado
-
-<img src="C:\Users\dalta\OneDrive - kaist.ac.kr\KAIST\Research\Projects\Digital System Guide\resources\vivado-logo.jpg" alt="vivado-logo" style="zoom: 67%;" />
+<p align="center">
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/ba2040c2c0f33598618073df356e9ae9206edcfd/01-intro-to-vivado-and-pynq/resources/vivado-logo.jpg" alt="vivado-logo" width="40%" />
+</p>
 
 
 
@@ -38,9 +38,9 @@ Vivado design suite is an integrated design environment (IDE) developed by Xilin
 
 
 ### PYNQ Framework
-
-<img src="C:\Users\dalta\OneDrive - kaist.ac.kr\KAIST\Research\Projects\Digital System Guide\resources\pynq-logo.png" style="zoom:33%;" />
-
+<p align="center">
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/ba2040c2c0f33598618073df356e9ae9206edcfd/01-intro-to-vivado-and-pynq/resources/pynq-logo.png" width="40%" />
+</p>
 PYNQ is an open-source framework from Xilinx that is designed for system designers, software developers, and hardware designers to easily use Xilinx platforms. With the support of Python language and libraries, designers can get the huge benefits of using programmable logic and microprocessors to build more interesting and powerful embedded systems. For now, the PYNQ framework can be used with Zynq, Zynq UltraScale+, Zynq RFSoC, and Alveo accelerator boards.
 
 
@@ -51,7 +51,9 @@ PYNQ is an open-source framework from Xilinx that is designed for system designe
 
 To install Xilinx Vivado on your computer, first, you need to download the installer from the Xilinx website. You can download the software through this link: **https://www.xilinx.com/support/download.html** . On the download page, you can choose either the online installer or offline installer. If you choose an offline installer, then the downloaded software can be used in either Linux or Windows operating systems. 
 
-![](C:\Users\dalta\OneDrive - kaist.ac.kr\KAIST\Research\Projects\Digital System Guide\resources\vivado-install.jpg)
+<p align="center">
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/ba2040c2c0f33598618073df356e9ae9206edcfd/01-intro-to-vivado-and-pynq/resources/vivado-install.jpg" width="70%" />
+</p>
 
 During the installation process, you need to choose the `Vivado HL Webpack edition` since it doesn't require any license to use the software. If you are using an online installer, please make sure that you have around 40 GB of free space left on your computer since the installer will download a couple of files with a total size of around 35 GB.
 
@@ -69,11 +71,15 @@ In order to set up the PYNQ board, you need to prepare the following items:
 
 After preparing those items, the first thing to do is to download the correct PYNQ image file for the board from the following link                                                        **http://www.pynq.io/board.html**. For this tutorial, you will use the PYNQ Z1 board from Digilent. So, download the PYNQ image for the PYNQ Z1 board.
 
-<img src="C:\Users\dalta\OneDrive - kaist.ac.kr\KAIST\Research\Projects\Digital System Guide\resources\pynq-download.jpg" style="zoom: 67%;" />
+<p align="center">
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/ba2040c2c0f33598618073df356e9ae9206edcfd/01-intro-to-vivado-and-pynq/resources/pynq-download.jpg" width="70%" />
+</p>
 
 After downloading the PYNQ Image, flash the image into the SD card using an OS flasher tool such as `Balena Etcher`. You can download Balena Etcher software from **https://www.balena.io/etcher/**. After flashing the PYNQ image to an SD card, now you can try to connect the board to your computer by following the steps below:
 
-<img src="C:\Users\dalta\OneDrive - kaist.ac.kr\KAIST\Research\Projects\Digital System Guide\resources\pynq-setup.jpg" style="zoom:80%;" />
+<p align="center">
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/ba2040c2c0f33598618073df356e9ae9206edcfd/01-intro-to-vivado-and-pynq/resources/pynq-setup.jpg" width="50%" />
+</p>
 
 1.	Set the JP4 jumper to SD position by placing the jumper over the top two pins as in the figure above.
 2.	If you use a micro USB cable to supply power to the board, place the JP5 jumper in a USB position. You can also power the board with a 12 V external power supply by configuring the JP5 jumper to REG position.
@@ -102,14 +108,16 @@ First, open up Vivado application and create a new project.
 5.	Add board constraint file by choosing pynq_z1.xdc file and make sure to check copy constrains files into project option.
 6.	In the board selection section, choose PYNQ-Z1 board if it is available. Otherwise, you should download the PYNQ-Z1 board file and copy the board files folder to `<Xilinx installation directory>\Vivado\<version>\data\xhub\boards\XilinxBoardStore\boards\Xilinx\`                                         (**Note:** for older Vivado version, you can copy the board files to `<Xilinx installation directory>\Vivado\<version>\data\boards`).                                                                     You can find PYNQ-Z1 board files on **https://pynq.readthedocs.io/en/latest/overlay_design_methodology/board_settings.html**. You need to restart Vivado after copying the board file.
 
-<img src="C:\Users\dalta\OneDrive - kaist.ac.kr\KAIST\Research\Projects\Digital System Guide\resources\pynq-board.png" style="zoom:80%;" />
-
-
+<p align="center">
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/ba2040c2c0f33598618073df356e9ae9206edcfd/01-intro-to-vivado-and-pynq/resources/pynq-board.png" width="70%" />
+</p>
 
 #### Create System Block Diagram
 In this tutorial, you will create the system block diagram which control the onboard LED operation via pushbuttons as follows.
 
-<img src="C:\Users\dalta\OneDrive - kaist.ac.kr\KAIST\Research\Projects\Digital System Guide\resources\led-chaser-bd.png" style="zoom: 60%;" />
+<p align="center">
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/ba2040c2c0f33598618073df356e9ae9206edcfd/01-intro-to-vivado-and-pynq/resources/led-chaser-bd.png" width="70%" />
+</p>
 
 In order to recreate the block diagram above in your Vivado project, you can follow the steps below:
 
@@ -123,25 +131,35 @@ In order to recreate the block diagram above in your Vivado project, you can fol
 
 5. After you add the ZYNQ IP core, you will see a green option window with `Run Block Automation` text in it. This block automation option will help you to connect the IP core in the design. But sometimes, the connection created by this automation process is not correct. So, make sure to recheck the connection after performing a block automation operation.
 
-![](C:\Users\dalta\OneDrive - kaist.ac.kr\KAIST\Research\Projects\Digital System Guide\resources\block-automation.png)
+<p align="center">
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/ba2040c2c0f33598618073df356e9ae9206edcfd/01-intro-to-vivado-and-pynq/resources/block-automation.png" width="70%" />
+</p>
 
 6. After running block automation, some new wires and `external interfaces` such as `DDR` and `FIXED_IO` will appear in the design which corresponds to the board output pins.
 
 7. The next step is to customize the `ZYNQ Processing System` core to meet the design requirement. For this project, you need to disable AXI ports that connect the processing system (PS) and programmable logic (PL) directly. You can disable those ports by double-clicking the ZYNQ IP core and click `PS-PL Configuration` section. In the PS-PL configuration, make sure to uncheck all of the available options.
 
-![](C:\Users\dalta\OneDrive - kaist.ac.kr\KAIST\Research\Projects\Digital System Guide\resources\ps-pl-config.png)
+<p align="center">
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/ba2040c2c0f33598618073df356e9ae9206edcfd/01-intro-to-vivado-and-pynq/resources/ps-pl-config.png" width="70%" />
+</p>
 
 8. After that, you need to enable some GPIO on the processing system (PS). To enable the GPIO, click on the `Peripheral I/O Pins` tab and check the `GPIO MIO` and `GPIO EMIO` option. You can also disable several unused ports such as flash and SPI ports.
 
-<img src="C:\Users\dalta\OneDrive - kaist.ac.kr\KAIST\Research\Projects\Digital System Guide\resources\io-config.png" style="zoom:60%;" />
+<p align="center">
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/ba2040c2c0f33598618073df356e9ae9206edcfd/01-intro-to-vivado-and-pynq/resources/io-config.png" width="70%" />
+</p>
 
 9. The last configuration you need to take care of is the clock configuration. To configure the clock signal of the system, select the `Clock Configuration` option on the page navigator, and under `PL Fabric Clocks`, set `FCLK_CLK0` to 50 MHz frequency as shown in the figure below.
 
-<img src="C:\Users\dalta\OneDrive - kaist.ac.kr\KAIST\Research\Projects\Digital System Guide\resources\clock-config.png" style="zoom:60%;" />
+<p align="center">
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/ba2040c2c0f33598618073df356e9ae9206edcfd/01-intro-to-vivado-and-pynq/resources/clock-config.png" width="70%" />
+</p>
 
 10. After finish configuring the ZYNQ IP core parameter, click `OK` and Vivado will update the ZYNQ IP core block diagram and the ZYNQ block should look like the figure below.
 
-<img src="C:\Users\dalta\OneDrive - kaist.ac.kr\KAIST\Research\Projects\Digital System Guide\resources\zynq-ip.png" style="zoom:80%;" />
+<p align="center">
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/ba2040c2c0f33598618073df356e9ae9206edcfd/01-intro-to-vivado-and-pynq/resources/zynq-ip.png" width="40%" />
+</p>
 
 
 
@@ -251,17 +269,23 @@ Before connecting the slicer module with another module, you need to enable the 
 
 2. Uncomment the set of lines related to the LEDs and buttons. After configuring the constraint file, your XDC file should look like the figure below.
 
-<img src="C:\Users\dalta\OneDrive - kaist.ac.kr\KAIST\Research\Projects\Digital System Guide\resources\pynq-constraint.png" style="zoom:70%;" />
+<p align="center">
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/ba2040c2c0f33598618073df356e9ae9206edcfd/01-intro-to-vivado-and-pynq/resources/pynq-constraint.png" width="70%" />
+</p>
 
 3. After that, go back to the block diagram window and do `Right Click`and select `Create Port` option. Selecting `Create Port` option will bring up new windows to create input and output ports to programmable logic (PL). For this project, create an input port for the buttons and output ports for the LEDs. The configuration of each port can be seen below:
    - Create output port with Port name set to `led`, Direction set to `Output`, and check `Create vector` option with the value from 3 to 0.
    - Create input port with Port name set to `btn`, Direction set to `Input`, and check `Create vector` option with the value from 3 to 0.
 
-<img src="C:\Users\dalta\OneDrive - kaist.ac.kr\KAIST\Research\Projects\Digital System Guide\resources\create-port.png" style="zoom:50%;" />
+<p align="center">
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/ba2040c2c0f33598618073df356e9ae9206edcfd/01-intro-to-vivado-and-pynq/resources/create-port.png" width="40%" />
+</p>
 
 4. The last step is to create connections between each module and external port interfaces. When completed, your block diagram should look similar to the block diagram in the figure below.
 
-<img src="C:\Users\dalta\OneDrive - kaist.ac.kr\KAIST\Research\Projects\Digital System Guide\resources\final-bd.png" style="zoom:40%;" />
+<p align="center">
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/ba2040c2c0f33598618073df356e9ae9206edcfd/01-intro-to-vivado-and-pynq/resources/final-bd.png" width="70%" />
+</p>
 
 
 
@@ -279,7 +303,9 @@ After creating the block diagram, you need to generate an output bitstream file 
 
 5. When the build is complete, you need to export the bitstream file by choosing `Export Bitstream File` option under the `Export` option under `File` menu. Make sure that your block diagram window is open before exporting the block diagram. Otherwise, the `Export Bitstream File` option will not show up. Make sure to name the `bitstream file (file with .bit extension)` with the block design name (by default it is design_1). Otherwise, an error message will appear when you are trying to load the design into PYNQ board.
 
-<img src="C:\Users\dalta\OneDrive - kaist.ac.kr\KAIST\Research\Projects\Digital System Guide\resources\bd-name.png" style="zoom:80%;" />
+<p align="center">
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/ba2040c2c0f33598618073df356e9ae9206edcfd/01-intro-to-vivado-and-pynq/resources/bd-name.png" width="80%" />
+</p>
 
 6. If you encounter any error during exporting process such as `Too many positional options when parsing` (**you can look for the error message in tcl console**), copy the `write_bd_tcl` line in tcl console, add double quotes (") symbol before and after your folder path, and run the command again using tcl console.
 
@@ -300,7 +326,9 @@ To run the design on the PYNQ board, first, you need to upload the bitstream and
 
 5. Upload `.hwh` file and `.tcl` file into `led_chaser` folder. You can find those files in `<project_name>\<project_name>.srcs\sources_1\bd\<block_design_name>\hw_handoff`
 
-<img src="C:\Users\dalta\OneDrive - kaist.ac.kr\KAIST\Research\Projects\Digital System Guide\resources\upload-files.png" style="zoom:67%;" />
+<p align="center">
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/ba2040c2c0f33598618073df356e9ae9206edcfd/01-intro-to-vivado-and-pynq/resources/upload-files.png" width="80%" />
+</p>
 
 
 
