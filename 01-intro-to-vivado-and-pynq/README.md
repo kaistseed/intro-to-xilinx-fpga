@@ -5,17 +5,17 @@
 
 ## :bookmark_tabs: Table of Content
 
-* [Context](#context)
-* [Background](#background)
-* [Programming an FPGA using Xilinx Vivado](#fpga-programming)
-* [Creating a Python-based Software-Hardware Interface](#software-interface)
-* [References](#references)
+* [Context](#information_source-context)
+* [Background](#mag-background)
+* [Programming an FPGA using Xilinx Vivado](#programming-an-fpga-using-xilinx-vivado)
+* [Creating a Python-based Software-Hardware Interface](#creating-a-python-based-software-hardware-interface)
+* [References](#book-references)
 
 
 
 ## :information_source: Context
 
-*Created by*: **Dalta Imam Maulana**
+*Created by*: **Dalta Imam Maulana**</br>
 *Document Version*: **December 23rd, 2022**
 
 
