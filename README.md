@@ -1,4 +1,10 @@
-# Introduction to Xilinx FPGA
+<table border-spacing: 0px; width="100%"; align="center">
+ <tr width="100%">
+    <td align="center"><img src="https://upload.wikimedia.org/wikipedia/commons/c/cb/Xilinx_logo.svg" width="75%"/><h1>Introduction to Xilinx FPGA Framework</h1>
+    </td>
+ </tr>
+</table>
+
 
 ## ZYNQ-based Xilinx FPGA
 
