@@ -7,8 +7,8 @@
 
 * [Context](#information_source-context)
 * [Background](#mag-background)
-* [Programming an FPGA using Xilinx Vivado](#programming-an-fpga-using-xilinx-vivado)
-* [Creating a Python-based Software-Hardware Interface](#creating-a-python-based-software-hardware-interface)
+* [Programming an FPGA using Xilinx Vivado](#-programming-an-fpga-using-xilinx-vivado)
+* [Creating a Python-based Software-Hardware Interface](#-creating-a-python-based-software-hardware-interface)
 * [References](#book-references)
 
 
@@ -36,16 +36,13 @@ Vivado design suite is an integrated design environment (IDE) developed by Xilin
 * Vivado IP integrator that allows the designer to easily integrate and configure IP core either a pre-built library from Xilinx or custom-made IP cores.
 
 
-
 ### PYNQ Framework
 <p align="center">
     <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/ba2040c2c0f33598618073df356e9ae9206edcfd/01-intro-to-vivado-and-pynq/resources/pynq-logo.png" width="40%" />
 </p>
 PYNQ is an open-source framework from Xilinx that is designed for system designers, software developers, and hardware designers to easily use Xilinx platforms. With the support of Python language and libraries, designers can get the huge benefits of using programmable logic and microprocessors to build more interesting and powerful embedded systems. For now, the PYNQ framework can be used with Zynq, Zynq UltraScale+, Zynq RFSoC, and Alveo accelerator boards.
 
-
-
-## Programming an FPGA using Xilinx Vivado
+## <img style="vertical-align:middle" src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/bc75dd4823e71aa3921d17f8110f6a9771cd9d16/01-intro-to-vivado-and-pynq/resources/chip.png" width="32px" title=":chip:"/> Programming an FPGA using Xilinx Vivado
 
 ### Installing Vivado
 
@@ -99,7 +96,7 @@ For more detailed information about how the board and how to set up it, you can 
 
 This guide will teach you how to build a basic Zynq system containing processing systems (PS) and programmable logic (PL). You will also learn how to make a simple memory-mapped interface that controls the programmable logic (PL) part connected to the onboard LED via Python program in the processing system (PS).
 
-#### Create New Vivado Project 
+#### ⦿ Create New Vivado Project 
 First, open up Vivado application and create a new project.
 1.	Click next on Create a New Project.
 2.	Enter the name of your project, for example, led_chaser.
@@ -112,7 +109,7 @@ First, open up Vivado application and create a new project.
     <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/ba2040c2c0f33598618073df356e9ae9206edcfd/01-intro-to-vivado-and-pynq/resources/pynq-board.png" width="70%" />
 </p>
 
-#### Create System Block Diagram
+#### ⦿ Create System Block Diagram
 In this tutorial, you will create the system block diagram which control the onboard LED operation via pushbuttons as follows.
 
 <p align="center">
@@ -163,11 +160,11 @@ In order to recreate the block diagram above in your Vivado project, you can fol
 
 
 
-#### Create LED Controller using Verilog
+#### ⦿ Create LED Controller using Verilog
 
 In this project, you need to create two modules using Verilog which are clock divider module and LED controller module. To create a new module, go to `PROJECT MANAGER`, select `Add Sources`, click `Add or Create Design Sources`, and then select `Create File`option. After naming the file, click `Finish`button, and then `Define Module`window will show up. Just skip this part by clicking `OK`button, since it's faster to type the Verilog code by yourself.
 
-##### Clock Divider Module
+##### ➤ Clock Divider Module
 
 For clock divider module, you will be given a sample Verilog code as below:
 
@@ -219,7 +216,7 @@ Add the code into your Verilog file and save it. You can simulate the clock divi
 
 
 
-##### LED Controller Module
+##### ➤ LED Controller Module
 
 To control LED behavior, you need to make another module that will control the LED movement by using clock divider output and it can go either in the left direction, the right direction, or stop depend on control signals:
 
@@ -289,7 +286,7 @@ Before connecting the slicer module with another module, you need to enable the 
 
 
 
-#### Generate Output Bitstream
+#### ⦿ Generate Output Bitstream
 
 After creating the block diagram, you need to generate an output bitstream file to run the design on the PYNQ board. To generate an output bitstream file, you can follow the steps below:
 
@@ -311,7 +308,7 @@ After creating the block diagram, you need to generate an output bitstream file 
 
 
 
-## Creating a Python-based Software-Hardware Interface
+## <img style="vertical-align:middle" src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/bc75dd4823e71aa3921d17f8110f6a9771cd9d16/01-intro-to-vivado-and-pynq/resources/python.png" width="32px" title=":python:"/> Creating a Python-based Software-Hardware Interface
 ### Uploading Design from PC to PYNQ Board
 
 To run the design on the PYNQ board, first, you need to upload the bitstream and tcl file into the PYNQ board. You can upload the files to the board by following the steps below:
