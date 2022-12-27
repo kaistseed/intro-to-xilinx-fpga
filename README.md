@@ -21,7 +21,7 @@
  <td>Xilinx Vivado and PYNQ framework</td>
  </tr>
  <tr>
- <td align="center">AXI Memory Mapped Interface</a></td>
+ <td align="center"><a href="https://github.com/kaistseed/intro-to-xilinx-fpga/tree/main/02-axi-mmio">AXI Memory Mapped Interface</a></td>
  <td>PYNQ-Z1</td>
  <td>AXI-based memory-mapped I/O</td>
  </tr>
