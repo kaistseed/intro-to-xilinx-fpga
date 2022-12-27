@@ -7,8 +7,8 @@
 
 * [Context](#information_source-context)
 * [Background](#mag-background)
-* [Programming an FPGA using Xilinx Vivado](#-programming-an-fpga-using-xilinx-vivado)
-* [Creating a Python-based Software-Hardware Interface](#-creating-a-python-based-software-hardware-interface)
+* [Simple Memory-Mapped Interface](#-simple-memory-mapped-interface)
+* [Pattern Matching Using Custom AXI Memory-Mapped IP](#question-practice-pattern-matching-using-custom-axi-memory-mapped-ip)
 * [References](#book-references)
 
 
@@ -36,7 +36,7 @@ AXI is part of ARM AMBA, a family of microcontroller buses first introduced in 1
 AXI4-Lite interface consists of five channels: `Read Address`, `Read Data`, `Write Address`, `Write Data`, and `Write Response`. In `read transaction`, AXI4-Lite uses `Read Address `and `Read Data` channels. Meanwhile, in `write transaction`, AXI4-Lite uses `Write Address`, `Write Data`, and `Write Response` channels.
 
 <p align="center">
-    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/ba2040c2c0f33598618073df356e9ae9206edcfd/01-intro-to-vivado-and-pynq/resources/pynq-logo.png" width="40%" />
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/5ceb245d80d7923ccb2bec1f2a86b3dcb2e3e36b/02-axi-mmio/resources/axi-rw.png" width="80%" />
 </p>
 
 All of the five channels use VALID-READY handshake process to transfer data, address, and control information. The source block generates VALID signal whenever address, data, or control information are available. Whereas sink block generates READY signal whenever the block can receive data from source. Data transfer process is happened when both VALID and READY signal are asserted.
@@ -46,7 +46,7 @@ All of the five channels use VALID-READY handshake process to transfer data, add
 ### AXI4-Lite Read Operation
 
 <p align="center">
-    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/ba2040c2c0f33598618073df356e9ae9206edcfd/01-intro-to-vivado-and-pynq/resources/pynq-logo.png" width="40%" />
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/5ceb245d80d7923ccb2bec1f2a86b3dcb2e3e36b/02-axi-mmio/resources/axi-lite-read.png" width="50%" />
 </p>
 
 The operation sequence of AXI4-Lite read operation is described below:
@@ -62,7 +62,7 @@ The operation sequence of AXI4-Lite read operation is described below:
 ### AXI4-Lite Write Operation
 
 <p align="center">
-    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/ba2040c2c0f33598618073df356e9ae9206edcfd/01-intro-to-vivado-and-pynq/resources/pynq-logo.png" width="40%" />
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/5ceb245d80d7923ccb2bec1f2a86b3dcb2e3e36b/02-axi-mmio/resources/axi-lite-write.png" width="50%" />
 </p>
 
 The operation sequence of AXI4-Lite write operation is described below:
@@ -85,13 +85,13 @@ In this section, you will create a memory-mapped interface that can be accessed 
 By default, the `Processing System (PS) AXI Master Ports` is enabled when you are adding `ZYNQ Processing System Core` to the design, but if it’s disabled, you can configure it by double-clicking the `ZYNQ Processing System Core` and under the `AXI Non-Secure Enablement` section in the `PS-PL Configuration`, enable a `General Purpose AXI Master Interface`.
 
 <p align="center">
-    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/ba2040c2c0f33598618073df356e9ae9206edcfd/01-intro-to-vivado-and-pynq/resources/vivado-install.jpg" width="70%" />
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/5ceb245d80d7923ccb2bec1f2a86b3dcb2e3e36b/02-axi-mmio/resources/axi-master-config.png" width="60%" />
 </p>
 
 After enabling the `AXI Master port` the `ZYNQ Processing System` block diagram should look like the figure below.
 
 <p align="center">
-    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/ba2040c2c0f33598618073df356e9ae9206edcfd/01-intro-to-vivado-and-pynq/resources/vivado-install.jpg" width="70%" />
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/5ceb245d80d7923ccb2bec1f2a86b3dcb2e3e36b/02-axi-mmio/resources/zynq-axi-master.png" width="40%" />
 </p>
 
 
@@ -113,113 +113,109 @@ In this section, you will make a custom IP core with AXI interface in it. Follow
 6. At the editor window, navigate to the source menu and double-click on the inner file (the one with `S00_AXI_inst`). This Verilog file contains all of the AXI-LITE timing and state machine template. So, you only need to add your logic to interact with this AXI interface.
 
 <p align="center">
-    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/ba2040c2c0f33598618073df356e9ae9206edcfd/01-intro-to-vivado-and-pynq/resources/pynq-download.jpg" width="70%" />
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/5ceb245d80d7923ccb2bec1f2a86b3dcb2e3e36b/02-axi-mmio/resources/ip-editor.png" width="80%" />
 </p>
 
 7. For this tutorial, you will make an IP block that takes a set of three numbers: `a`, `b`, and `c`. Those values are used to compute `d` given by the equation below. 
-   $$
-   d = 3 + (a + b) c^2
-   $$
-   During AXI IP core creation process, you set the register depth of the module to 4. So, you can think the module as an AXI module with four read/write accessible memory locations as shown in the figure below.
+   $$d = 3 + (a + b) c^2$$
+   During AXI IP core creation process, you set the register depth of the module to 4. So, you can think the module as an AXI module with four read/write accessible memory locations. You will store the `a`, `b` and `c` values in the address `0x00`, `0x04`, `0x08` respectively. While the computation result `d` will be stored at address `0x0C`. The memory address space is illustrated in the figure below.
 
 <p align="center">
-    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/ba2040c2c0f33598618073df356e9ae9206edcfd/01-intro-to-vivado-and-pynq/resources/pynq-setup.jpg" width="50%" />
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/5ceb245d80d7923ccb2bec1f2a86b3dcb2e3e36b/02-axi-mmio/resources/axi-mem-addr.png" width="40%" />
 </p>
 
-​	   You will store the `a`, `b` and `c` values in the address `0x00`, `0x04`, `0x08` respectively. While the computation result `d` will be stored at address `0x0C`.
+8. To perform the calculation, you will be provided a Verilog module that performs the arithmetic operation in a pipelined fashion. It means that the value of $c^2$ is calculated in one clock cycle and the rest of the computation will be computed on the next clock cycle. 
 
-8. To perform the calculation, you will be provided a Verilog module that performs the arithmetic operation in a pipelined fashion. It means that the value of c<sup>2</sup> is calculated in one clock cycle and the rest of the computation will be computed on the next clock cycle. 
-
-   ```verilog
-   `timescale 1ns / 1ps
-   module math_op
-       // Declare ports
-       (
-           // Input ports
-           input wire I_CLK, I_RSTN,
-           input wire signed  [31:0] IN_A,
-           input wire signed  [31:0] IN_B,
-           input wire signed  [31:0] IN_C,
-   
-           // Output ports
-           output wire signed  [31:0] OUT_D
-       );
-   
-       // Declare registers
-       reg [31:0] r_c_square;
-       reg [31:0] r_out;
-   
-       // Main logic
-       always @(posedge I_CLK) 
-       begin
-           if (!I_RSTN)
-           begin
-               r_c_square <= 32'd0;
-               r_out <= 32'd0;
-           end
-           else
-           begin
-               r_c_square <= IN_C * IN_C;
-               r_out <= 3 + r_c_square * (IN_A + IN_B);
-           end
-       end
-   
-       // Assign value to ports
-       assign OUT_D = r_out;
-       
-   endmodule
-   ```
-
-   9. In order to integrate the `math_op` module into AXI IP core, while in the IP editor, create a new source by using `Add Sources` button and create a new Verilog file that contains `math_op` Verilog code above.
-
-   10. After that, call the `math_op` instance inside the AXI template Verilog file (the one with `S00_AXI_inst`). You can call the `math_op` instance by copying the code below on the area below the `Add user logic here`. Things to note that in the module instantiation, the input of the `math_op` module is connected to the AXI registers namely `slv_reg0`, `slv_reg1`, `slv_reg2`. Those registers correspond to the first, second, and third memory location in the AXI module, and those values are always filled with the most recent values written to them.
-
-       ```verilog
-       // Add user logic here
-       // Declare wire
-       wire [31:0] w_math_op_out;
-       
-       // Call math_op module
-       math_op math_op_module (
+```verilog
+`timescale 1ns / 1ps
+module math_op
+   // Declare ports
+   (
        // Input ports
-           .I_CLK(S_AXI_ACLK), 
-           .I_RSTN(S_AXI_ARESETN),
-           .IN_A(slv_reg0),
-           .IN_B(slv_reg1),
-           .IN_C(slv_reg2),
-       
-           // Output ports
-           .OUT_D(w_math_op_out)
-       );
-       // User logic ends
-       ```
+       input wire I_CLK, I_RSTN,
+       input wire signed  [31:0] IN_A,
+       input wire signed  [31:0] IN_B,
+       input wire signed  [31:0] IN_C,
+
+       // Output ports
+       output wire signed  [31:0] OUT_D
+   );
+
+   // Declare registers
+   reg [31:0] r_c_square;
+   reg [31:0] r_out;
+
+   // Main logic
+   always @(posedge I_CLK) 
+   begin
+       if (!I_RSTN)
+       begin
+           r_c_square <= 32'd0;
+           r_out <= 32'd0;
+       end
+       else
+       begin
+           r_c_square <= IN_C * IN_C;
+           r_out <= 3 + r_c_square * (IN_A + IN_B);
+       end
+   end
+
+   // Assign value to ports
+   assign OUT_D = r_out;
+
+endmodule
+```
+
+9. In order to integrate the `math_op` module into AXI IP core, while in the IP editor, create a new source by using `Add Sources` button and create a new Verilog file that contains `math_op` Verilog code above.
+
+10. After that, call the `math_op` instance inside the AXI template Verilog file (the one with `S00_AXI_inst`). You can call the `math_op` instance by copying the code below on the area below the `Add user logic here`. Things to note that in the module instantiation, the input of the `math_op` module is connected to the AXI registers namely `slv_reg0`, `slv_reg1`, `slv_reg2`. Those registers correspond to the first, second, and third memory location in the AXI module, and those values are always filled with the most recent values written to them.
+
+```verilog
+// Add user logic here
+// Declare wire
+wire [31:0] w_math_op_out;
+
+// Call math_op module
+math_op math_op_module (
+// Input ports
+   .I_CLK(S_AXI_ACLK), 
+   .I_RSTN(S_AXI_ARESETN),
+   .IN_A(slv_reg0),
+   .IN_B(slv_reg1),
+   .IN_C(slv_reg2),
+
+   // Output ports
+   .OUT_D(w_math_op_out)
+);
+// User logic ends
+```
 
    11. In the code above, you can also see that the output value is connected to `w_math_op_out wire`. This wire is used to link the `math_op` output value `d` to an output register that will be placed into a memory-mapped location. To link the output, you need to connect the other end of `w_math_op_out` wire into the appropriate register location. In this case, you need to connect the wire to `slv_reg3`, and this connection can be done by replacing the line in the AXI template file as you can see in the code below.
 
-       ```verilog
-       	// Implement memory mapped register select and read logic generation
-           // Slave register read enable is asserted when valid address is available
-           // and the slave is ready to accept the read address.
-           assign slv_reg_rden = axi_arready & S_AXI_ARVALID & ~axi_rvalid;
-           always @(*)
-           begin
-                 // Address decoding for reading registers
-                 case ( axi_araddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB] )
-                   2'h0   : reg_data_out <= slv_reg0;
-                   2'h1   : reg_data_out <= slv_reg1;
-                   2'h2   : reg_data_out <= slv_reg2;
-                   2'h3   : reg_data_out <= w_math_op_out;
-                   default : reg_data_out <= 0;
-                 endcase
-           end
-       ```
+   ```verilog
+   // Implement memory mapped register select and read logic generation
+   // Slave register read enable is asserted when valid address is available
+   // and the slave is ready to accept the read address.
+   assign slv_reg_rden = axi_arready & S_AXI_ARVALID & ~axi_rvalid;
+   always @(*)
+   begin
+         // Address decoding for reading registers
+         case ( axi_araddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB] )
+           2'h0   : reg_data_out <= slv_reg0;
+           2'h1   : reg_data_out <= slv_reg1;
+           2'h2   : reg_data_out <= slv_reg2;
+           2'h3   : reg_data_out <= w_math_op_out;
+           default : reg_data_out <= 0;
+         endcase
+   end
+   ```
 
    12. The next step is to package the newly created custom AXI IP core that you have made. This can be done by first looking at the `Packaging Steps` tab in IP Editor window. In the `Packaging Steps` you need to make sure that all of the tabs have green checkmarks in it. Otherwise, you need to resolve those issues by clicking on the unchecked tab and click on the text with blue color and yellow background. For example, in `File Groups` tab, you need to click `Merge Changes from File Groups Wizard` text to resolve the issue and after that you can repackage the IP by clicking on `Review and Package` tab and click the `Re-Package IP` button.
 
    13. If there are no errors in the design, you will be asked if you want to return to your main project. You just need to click `OK` to exit IP editor. Upon exit, a pop-up window about `Generating Output Products` may appear. If it’s showing, then you need to click `Global` and also click `Generate`.
 
 <p align="center">
-    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/ba2040c2c0f33598618073df356e9ae9206edcfd/01-intro-to-vivado-and-pynq/resources/pynq-download.jpg" width="70%" />
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/5ceb245d80d7923ccb2bec1f2a86b3dcb2e3e36b/02-axi-mmio/resources/ip-packager.png" width="80%" />
 </p>
 
 
@@ -228,7 +224,7 @@ In this section, you will make a custom IP core with AXI interface in it. Follow
 After creating a custom AXI IP core, you need to add and integrate the newly created module into the block diagram. You can add it by clicking `Add IP` button or by using (Ctrl + I) keyboard shortcut and search the IP by name, in the example below, the IP core can be added by entering `memory_map_ip` keyword on the search bar. After that, you can let Vivado do automate wiring operation and the overall diagram of the system should look like the figure below.
 
 <p align="center">
-    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/ba2040c2c0f33598618073df356e9ae9206edcfd/01-intro-to-vivado-and-pynq/resources/pynq-download.jpg" width="70%" />
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/5ceb245d80d7923ccb2bec1f2a86b3dcb2e3e36b/02-axi-mmio/resources/overall-bd.png" width="60%" />
 </p>
 
 If there are no errors, you can do a sanity check of your system by clicking on a button with a check-mark as you did in the previous project. After that, right-click on the block diagram file under the Sources tab and click Create HDL Wrapper. The last thing you need to do in Vivado is to Generate Bitstream and export both of Bitstream File, Block Design, and Hardware File as in the previous project.
@@ -305,12 +301,12 @@ print("Output result: {}".format(mathOp(4, -9, 2)))
 
 
 
-## :question: [Practice] Pattern Matching using Custom AXI Memory-Mapped IP 
+## :question: [Practice] Pattern Matching Using Custom AXI Memory-Mapped IP 
 
 After successfully implementing the basic AXI Memory Mapped Interface above, you need to implement a module to count number of pattern occurrence in a data. The input of this module are one 32-bit data and one 4-bit pattern data. The output of the module is number of pattern occurrence in the 32-bit data. For example, if you have 32-bit data `10100000101000001010000010100000` and 4-bit input pattern `1010`, the output of this module are 4 because there are 4 `1010` pattern occurrence in input data.
 
 <p align="center">
-    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/ba2040c2c0f33598618073df356e9ae9206edcfd/01-intro-to-vivado-and-pynq/resources/pynq-download.jpg" width="70%" />
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/5ceb245d80d7923ccb2bec1f2a86b3dcb2e3e36b/02-axi-mmio/resources/pattern-counter.png" width="60%" />
 </p>
 If the explanation is not clear enough, you can take a look at video in the link below:
 
