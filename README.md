@@ -26,7 +26,7 @@
  <td>AXI-based memory-mapped I/O</td>
  </tr>
  <tr>
- <td align="center">Digital Sensor (SPI and I2C Interface)</a></td>
+ <td align="center"><a href="https://github.com/kaistseed/intro-to-xilinx-fpga/tree/main/03-digital-sensor">Digital Sensor (SPI and I2C Interface)</a></td>
  <td>PYNQ-Z1</td>
  <td>Interfacing with digital I/O</td>
  </tr>
