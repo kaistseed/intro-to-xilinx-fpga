@@ -205,7 +205,7 @@ Otherwise, just plug the Arduino shield with sensors to the PYNQ Arduino pin hea
 
 Once you connect the sensors, export the bitstream file and block diagram file and upload them to the PYNQ board, you need to create a new notebook and write Python code to control the behavior of your custom AXI memory-mapped interface. 
 
-The first thing you need to do is to import the required `PYNQ library`, `pybme280` and `pympu6050` library, and load the `overlay`. You can also check which IP core is connected to your system by using printing `ip_dict` variable from your overlay class. 
+The first thing you need to do is to import the required `PYNQ library`, [pybme280](https://github.com/kaistseed/intro-to-xilinx-fpga/blob/b92d1f3470d12a6fab190918205a11a8bdf126c2/03-digital-sensor/pybme280.py) and [pympu6050](https://github.com/kaistseed/intro-to-xilinx-fpga/blob/b92d1f3470d12a6fab190918205a11a8bdf126c2/03-digital-sensor/pympu6050.py) library, and load the `overlay`. You can also check which IP core is connected to your system by using printing `ip_dict` variable from your overlay class. 
 
 ```python
 # Import library
