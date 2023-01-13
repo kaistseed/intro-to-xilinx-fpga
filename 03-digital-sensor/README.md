@@ -7,8 +7,8 @@
 
 * [Context](#information_source-context)
 * [Background](#mag-background)
-* [Simple Memory-Mapped Interface](#-simple-memory-mapped-interface)
-* [Pattern Matching Using Custom AXI Memory-Mapped IP](#question-practice-pattern-matching-using-custom-axi-memory-mapped-ip)
+* [AXI-based I2C and SPI Interface](#-axi-based-i2c-and-spi-interface)
+* [Postprocessing Sensor Data](#question-practice-postprocessing-sensor-data)
 * [References](#book-references)
 
 
@@ -38,7 +38,7 @@ To start communication, master device configures the transaction clock using a f
 The SPI transmission usually involves two shift register, one in each master and slave device which connected to each other in ring topology. Usually, the most significant bit of data is shifted out first from both master and slave device. This shift and send process will continue to run until master device stops sending the clock signal.
 
 <p align="center">
-    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/5ceb245d80d7923ccb2bec1f2a86b3dcb2e3e36b/02-axi-mmio/resources/axi-rw.png" width="80%" />
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/91db9570a2c6f66e5b13f714534b07b04eb42133/03-digital-sensor/resources/spi-interface.png" width="45%" />
 </p>
 
 Beside setting clock frequency, master device also need to configure clock polarity (CPOL) and clock phase (CPHA). Clock polarity (CPOL) determines the polarity of clock signal. If CPOL is 0, it means that the clock is idle at 0, the leading edge is a rising edge, and trailing edge is a falling edge. Otherwise, the clock signal idle at 1, falling edge is leading edge, and rising edge is trailing edge of the clock signal.
@@ -46,7 +46,7 @@ Beside setting clock frequency, master device also need to configure clock polar
 Meanwhile, clock phase (CPHA) determines the timing of data bits relative to clock signal. If CPHA is 0, the output data will change during trailing edge of preceding clock cycle and input data will be received during next leading edge of clock signal. As for SPI interface with CPHA value of 1, the output data will change during leading edge of clock cycle and input data will be received during trailing edge of the clock cycle [1].
 
 <p align="center">
-    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/5ceb245d80d7923ccb2bec1f2a86b3dcb2e3e36b/02-axi-mmio/resources/axi-rw.png" width="80%" />
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/91db9570a2c6f66e5b13f714534b07b04eb42133/03-digital-sensor/resources/spi-timing.png" width="45%" />
 </p>
 
 
@@ -66,7 +66,7 @@ There are four possible configurations of I2C which are:
 To begin the transaction, master device sends START signal followed by 7-bit address of the slave device, which then followed by single bit representing whether the master wants to write data (0) or read data (1) from slave. If the slave device exists, it will send back ACK signal bit for that address. After receiving ACK signal from slave, master will continue to read or write data from or to slave. The START signal is usually indicated by high-to-low transition of SDA line with SCL being high. Meanwhile, the STOP signal is indicated by a low-to-high transition of SDA with SCL in high [2].
 
 <p align="center">
-    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/5ceb245d80d7923ccb2bec1f2a86b3dcb2e3e36b/02-axi-mmio/resources/axi-rw.png" width="80%" />
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/91db9570a2c6f66e5b13f714534b07b04eb42133/03-digital-sensor/resources/i2c-timing.png" width="60%" />
 </p>
 
 
@@ -74,7 +74,7 @@ To begin the transaction, master device sends START signal followed by 7-bit add
 ### MPU6050 - Gyroscope and Accelerometer Sensor
 
 <p align="center">
-    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/5ceb245d80d7923ccb2bec1f2a86b3dcb2e3e36b/02-axi-mmio/resources/axi-lite-read.png" width="50%" />
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/91db9570a2c6f66e5b13f714534b07b04eb42133/03-digital-sensor/resources/mpu6050.jpg" width="30%" />
 </p>
 MPU6050 is a sensor which consists of 3-axis accelerometer and 3-axis gyroscope sensor. This sensor can be used to measure acceleration, velocity, and orientation of an object. This module also contains digital motion processor (DMP) which can perform complex calculation such as sampling and data filtering.
 
@@ -86,9 +86,10 @@ The MPU6050 module support I2C protocol, so that the processor or microcontrolle
 ### BME280 - Temperature, Pressure, and Humidity Sensor
 
 <p align="center">
-    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/5ceb245d80d7923ccb2bec1f2a86b3dcb2e3e36b/02-axi-mmio/resources/axi-lite-write.png" width="50%" />
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/91db9570a2c6f66e5b13f714534b07b04eb42133/03-digital-sensor/resources/bme280.png" width="25%" />
 </p>
 BME280 is a temperature, humidity, and pressure sensor which can measure relative humidity from 0 to 100% scale with ±3% accuracy, barometric pressure from 300Pa to 1100 hPa with ±1hPa absolute accuracy, and temperature from -40°C to 85°C with accuracy of ±1°C. This sensor supports SPI interface and also contains internal voltage level translator. So, the module can be connected either with 5V or 3.3V supply voltage [4].
+
 
 
 
@@ -103,7 +104,7 @@ In this section, you will create a memory-mapped interface that can be accessed 
 By default, the `Processing System (PS) AXI Master Ports` is enabled when you are adding `ZYNQ Processing System Core` to the design, but if it’s disabled, you can configure it by double-clicking the `ZYNQ Processing System Core` and under the `AXI Non-Secure Enablement` section in the `PS-PL Configuration`, enable a `General Purpose AXI Master Interface`.
 
 <p align="center">
-    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/5ceb245d80d7923ccb2bec1f2a86b3dcb2e3e36b/02-axi-mmio/resources/axi-master-config.png" width="60%" />
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/91db9570a2c6f66e5b13f714534b07b04eb42133/03-digital-sensor/resources/axi-master-config.png" width="60%" />
 </p>
 
 After enabling the `AXI Master port` the `ZYNQ Processing System` block diagram should look like the figure below.
@@ -129,13 +130,13 @@ In this section, you will add AXI IIC interface to the design. Follow the instru
 5. Next step is to adjust the `address mode` and `SDA active state` configuration. For MPU6050 sensor, you need to set `address mode` to `7-bit` since MPU6050 address is 7-bit long and `active state of SDA` to `0`. These configurations depend on the sensor setting. So, make sure to check the sensor datasheet before changing the `AXI IIC IP configuration`.
 
    <p align="center">
-       <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/5ceb245d80d7923ccb2bec1f2a86b3dcb2e3e36b/02-axi-mmio/resources/ip-editor.png" width="80%" />
+       <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/91db9570a2c6f66e5b13f714534b07b04eb42133/03-digital-sensor/resources/axi-iic-ip.png" width="55%" />
    </p>
 
 6. After that, you need to add IIC interface port in order to map the `AXI IIC` core output to the board pins. To add interface port, right click at the block diagram window and click `Create Interface Port` or use `Ctrl+L` keyboard shortcut. In the interface port window, set `interface name`, select `IIC interface`, and set the mode to `Master`. Finally, connect the `newly created interface port` with `IIC port`of AXI IIC IP core.
 
 <p align="center">
-    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/5ceb245d80d7923ccb2bec1f2a86b3dcb2e3e36b/02-axi-mmio/resources/ip-editor.png" width="80%" />
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/91db9570a2c6f66e5b13f714534b07b04eb42133/03-digital-sensor/resources/axi-iic-port.png" width="30%" />
 </p>
 
 
@@ -145,12 +146,12 @@ In this section, you will add AXI IIC interface to the design. Follow the instru
 After adding AXI IIC to your design, you also need to add an SPI interface in order to communicate with SPI-based sensor. In this case, you need to add `AXI Quad SPI` IP core. To add the IP core, you can just follow the steps when you add the `AXI IIC` IP core. For AXI Quad SPI core configurations, you just need to `disable STARTUP Primitive` option.
 
 <p align="center">
-    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/5ceb245d80d7923ccb2bec1f2a86b3dcb2e3e36b/02-axi-mmio/resources/overall-bd.png" width="60%" />
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/91db9570a2c6f66e5b13f714534b07b04eb42133/03-digital-sensor/resources/axi-qspi.png" width="55%" />
 </p>
 After adding the core, you also need to add the interface port to map AXI Quad SPI core output to the board pins. To add SPI interface port, go to `board` section next to diagram window and find `SPI connector J6`, right click after selecting SPI connector J6, and choose `Auto Connect` option. This step allows Vivado to map existing IP core in the block diagram, in this case `AXI Quad SPI block` with available port in the PYNQ-Z1 board.
 
 <p align="center">
-    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/5ceb245d80d7923ccb2bec1f2a86b3dcb2e3e36b/02-axi-mmio/resources/overall-bd.png" width="60%" />
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/91db9570a2c6f66e5b13f714534b07b04eb42133/03-digital-sensor/resources/axi-qspi-port.png" width="80%" />
 </p>
 
 
@@ -160,16 +161,18 @@ After adding the core, you also need to add the interface port to map AXI Quad S
 After adding both `AXI IIC` IP core and `AXI Quad SPI` IP core, run design automation and validate the design. If there are no errors, then you can generate the block design wrapper and start `synthesizing` the design.
 
 <p align="center">
-    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/5ceb245d80d7923ccb2bec1f2a86b3dcb2e3e36b/02-axi-mmio/resources/overall-bd.png" width="60%" />
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/91db9570a2c6f66e5b13f714534b07b04eb42133/03-digital-sensor/resources/final-bd.png" width="70%" />
 </p>
 
 Before running implementation and bitstream generation process, you need to change the `board pin mapping`, so that the AXI IIC IP core and AXI Quad SPI core inputs and outputs are mapped to correct pins. To change the pin mapping, click `open synthesized design` in the left menu and after synthesized design opens, click `window > I/O ports` option from toolbar.
 
 <p align="center">
-    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/5ceb245d80d7923ccb2bec1f2a86b3dcb2e3e36b/02-axi-mmio/resources/overall-bd.png" width="60%" />
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/91db9570a2c6f66e5b13f714534b07b04eb42133/03-digital-sensor/resources/io-port-window.png" width="80%" />
 </p>
 
 In the I/O ports menu, you need to change board pin mapping as follows:
+
+<div align="center">
 
 | Port Name  | Board Pin Name | Package Pin Name |  I/O Std  |
 | :--------: | :------------: | :--------------: | :-------: |
@@ -180,6 +183,8 @@ In the I/O ports menu, you need to change board pin mapping as follows:
 | SPI_sck_io |   spi_sclk_i   |       N17        | LVCMOS33* |
 | SPI_ss_io  |    spi_ss_i    |       T16        | LVCMOS33* |
 
+</div>
+
 After changing the pin mapping, save the constraint, resynthesize the design and start generating design bitstream.
 
 
@@ -189,13 +194,13 @@ After changing the pin mapping, save the constraint, resynthesize the design and
 After generating bitstream, you need to connect the sensor to PYNQ board before you can run and test the design. For this module, you will connect MPU6050 sensor to the board via IIC interface. Meanwhile, SPI interface is used to connect BME280 sensor with PYNQ board. If you connect those sensors directly without Arduino shield, you can follow the schematic below.
 
 <p align="center">
-    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/5ceb245d80d7923ccb2bec1f2a86b3dcb2e3e36b/02-axi-mmio/resources/overall-bd.png" width="60%" />
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/91db9570a2c6f66e5b13f714534b07b04eb42133/03-digital-sensor/resources/sensor-no-shield.png" width="40%" />
 </p>
 
 Otherwise, just plug the Arduino shield with sensors to the PYNQ Arduino pin header.
 
 <p align="center">
-    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/5ceb245d80d7923ccb2bec1f2a86b3dcb2e3e36b/02-axi-mmio/resources/overall-bd.png" width="60%" />
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/91db9570a2c6f66e5b13f714534b07b04eb42133/03-digital-sensor/resources/sensor-shield.png" width="40%" />
 </p>
 
 Once you connect the sensors, export the bitstream file and block diagram file and upload them to the PYNQ board, you need to create a new notebook and write Python code to control the behavior of your custom AXI memory-mapped interface. 
@@ -400,6 +405,6 @@ For other example program, you can find at this GitHub link `MPU6050`: **https:/
 - *PYNQ main website*, February 2021. Available: [**http://www.pynq.io/**](http://www.pynq.io/)
 - *PYNQ-Z1 documentation*, February 2021. Available: [**https://pynq.readthedocs.io/en/v2.6.1/getting_started/pynq_z1_setup.html**](https://pynq.readthedocs.io/en/v2.6.1/getting_started/pynq_z1_setup.html) 
 - *MPU6050 – Accelerometer and Gyroscope Module,* April 2021. Available:  [**https://components101.com/sensors/mpu6050-module**](https://components101.com/sensors/mpu6050-module)
-- *Interface BME280 Temperature, Humidity, and Pressure Sensor with Arduino,* April 2021. Available: [**https://lastminuteengineers.com/bme280-arduino-tutorial/**](https://lastminuteengineers.com/bme280-arduino-tutorial/)
+- *Interface BME280 Sensor with Arduino,* April 2021. Available: [**https://lastminuteengineers.com/bme280-arduino-tutorial/**](https://lastminuteengineers.com/bme280-arduino-tutorial/)
 - *Adafruit BME280 Library*, April 2021. Available: [**https://github.com/adafruit/Adafruit_BME280_Library**](https://github.com/adafruit/Adafruit_BME280_Library)
 - *Arduino-MPU6050*, April 2021. Available: [**https://github.com/jarzebski/Arduino-MPU6050**](https://github.com/jarzebski/Arduino-MPU6050)
