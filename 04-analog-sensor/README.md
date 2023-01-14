@@ -7,8 +7,8 @@
 
 * [Context](#information_source-context)
 * [Background](#mag-background)
-* [AXI-based I2C and SPI Interface](#-axi-based-i2c-and-spi-interface)
-* [Postprocessing Sensor Data](#question-practice-postprocessing-sensor-data)
+* [AXI XADC Interface](#-axi-xadc-inteface)
+* [Filtering Raw Sensor Data](#question-practice-filtering-raw-sensor-data)
 * [References](#book-references)
 
 
@@ -29,7 +29,7 @@ Analog to digital converter is a system that converts analog signals such as lig
 One of the performance parameters of the ADC is resolution. ADC resolution indicates the number of discrete steps or values the converter can convert the maximum allowable analog value to discrete value. In PYNQ board, there is a hard IP block that consists of dual 12-bit ADC with sampling rate up to 1 Mega sample per second (MSPS). It means that the PYNQ board can quantize the analog input into 4096 different amplitude level [1][2].
 
 <p align="center">
-    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/91db9570a2c6f66e5b13f714534b07b04eb42133/03-digital-sensor/resources/spi-interface.png" width="45%" />
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/209dea91f96f43acbdc4e2250f3a2eeb88decdfb/04-analog-sensor/resources/adc-conv-scheme.jpg" width="30%" />
 </p>
 
 
@@ -38,7 +38,7 @@ One of the performance parameters of the ADC is resolution. ADC resolution indic
 MICS 6814 is an analog MEMS sensor that can detect the pollution from automobile exhaust or industrial pollution. This sensor can sense carbon monoxide (CO), ammonia (NH3), and nitrogen dioxide (NO2) gas [3].
 
 <p align="center">
-    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/91db9570a2c6f66e5b13f714534b07b04eb42133/03-digital-sensor/resources/i2c-timing.png" width="60%" />
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/209dea91f96f43acbdc4e2250f3a2eeb88decdfb/04-analog-sensor/resources/mics-6814.jpg" width="35%" />
 </p>
 
 
@@ -54,13 +54,13 @@ In this section, you will create an interface between XADC IP core that receive 
 In order to allow DMA IP core to handle the transaction between XADC IP core and ZYNQ processing system, you need to enable high performance AXI slave interface in the ZYNQ processing system. To do this, you can enable it by checking one of the `S AXI HP` interface under the `HP Slave AXI` Interface.
 
 <p align="center">
-    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/91db9570a2c6f66e5b13f714534b07b04eb42133/03-digital-sensor/resources/axi-master-config.png" width="60%" />
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/209dea91f96f43acbdc4e2250f3a2eeb88decdfb/04-analog-sensor/resources/axi-hp-slave-conf.jpg" width="65%" />
 </p>
 
 After enabling the `high performance AXI slave` interface, the `ZYNQ Processing System` block diagram should look like the figure below.
 
 <p align="center">
-    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/5ceb245d80d7923ccb2bec1f2a86b3dcb2e3e36b/02-axi-mmio/resources/zynq-axi-master.png" width="40%" />
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/209dea91f96f43acbdc4e2250f3a2eeb88decdfb/04-analog-sensor/resources/axi-hp-slave.jpg" width="50%" />
 </p>
 
 
@@ -78,7 +78,7 @@ In this section, you will add XADC wizard IP core to the design. Follow the inst
 4. In the basic setting section, you need to disable AXI-Lite interface and enable AXI-Stream interface, since you will connect this module to AXI DMA through AXI-Stream interface. In this section, you can also configure sampling rate of the block by changing `ADC Conversion Rate` parameter. By default, it is set to maximum value which is 1 Mega sample per second (MSPS). If you want, you can change the sampling rate to any number you want, but for this project, you can leave the conversion rate parameter at its default value.
 
    <p align="center">
-       <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/91db9570a2c6f66e5b13f714534b07b04eb42133/03-digital-sensor/resources/axi-iic-ip.png" width="55%" />
+       <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/209dea91f96f43acbdc4e2250f3a2eeb88decdfb/04-analog-sensor/resources/xadc-conf.jpg" width="70%" />
    </p>
 
 5. Next, in the `alarms` section, you need to disable all of the alarm signals since you’re not going to use it.
@@ -88,13 +88,13 @@ In this section, you will add XADC wizard IP core to the design. Follow the inst
 7. After adding and configuring the XADC wizard block, you need to enable the `VAUXP1 VAUXN1` channel because by default those channels are disabled even though you’ve checked the enable channel setting when you configure XADC wizard block. To do this, you need to click the XADC wizard block you’ve added and under the `block properties` navigate to `properties` section and you need to change the value of `CHANNEL_ENABLE_VAUXP1_VAUXN1` to true. You can find the `CHANNEL_ENABLE_VAUXP1_VAUXN1` parameter under `config` option in the properties.
 
    <p align="center">
-       <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/91db9570a2c6f66e5b13f714534b07b04eb42133/03-digital-sensor/resources/axi-iic-ip.png" width="55%" />
+       <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/209dea91f96f43acbdc4e2250f3a2eeb88decdfb/04-analog-sensor/resources/xadc-prop.jpg" width="75%" />
    </p>
 
 8. After enabling the channel, you need to connect both `vauxp1` and `vauxn1` to port since you’re going to read external analog input with the XADC module. You can create external port by right click and choose `create port` menu. You can name your port anything you want but make sure to set the port as an input port. After adding the port, your diagram should look like similar to figure below.
 
    <p align="center">
-       <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/91db9570a2c6f66e5b13f714534b07b04eb42133/03-digital-sensor/resources/axi-iic-port.png" width="30%" />
+       <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/209dea91f96f43acbdc4e2250f3a2eeb88decdfb/04-analog-sensor/resources/xadc-port.jpg" width="50%" />
    </p>
 
 9. In the XADC wizard configuration menu under basic section, you can see that by default the XADC module will run continuously (continuous mode), but if the XADC samples data and writes the data continuously to the memory through AXI DMA, it will be hard for you to check or interact with the data since the data keeps changing each time. So, instead you will control the operation of XADC module or control what data the DMA needs to store to memory via physical button.
@@ -110,7 +110,7 @@ For this project, to control the sample data write process by AXI DMA, you will 
 2. You can download the `debouncer` module from PYNQ GitHub repository (https://github.com/Xilinx/PYNQ) and add the custom IP core by clicking `settings` under project manager tab and in the settings menu, go to IP repository section and click `plus sign` to add the IP from PYNQ repository. When adding the repository, you can point to `<Your download directory>/PYNQ/boards/ip` folder, so that all of the IP inside the ip folder are automatically added to your project
 
 <p align="center">
-    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/91db9570a2c6f66e5b13f714534b07b04eb42133/03-digital-sensor/resources/axi-qspi.png" width="55%" />
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/209dea91f96f43acbdc4e2250f3a2eeb88decdfb/04-analog-sensor/resources/ip-repo-add.jpg" width="100%" />
 </p>
 
 
@@ -234,7 +234,7 @@ In this section, you will create a custom AXI Stream based module to control the
 4. Next add the newly created AXI stream module to block diagram and place it between XADC wizard and AXI DMA module. You need to connect the `M_AXIS` port of the XADC wizard to `S00_AXIS` port of the custom AXI stream module, `M00_AXIS` port to` AXI DMA S_AXIS_S2MM` port, and custom AXI stream `btn_input` port to one of the debouncer input. After connecting those modules, your diagram should look like the figure below.
 
    <p align="center">
-       <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/91db9570a2c6f66e5b13f714534b07b04eb42133/03-digital-sensor/resources/final-bd.png" width="70%" />
+       <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/209dea91f96f43acbdc4e2250f3a2eeb88decdfb/04-analog-sensor/resources/unrouted-bd.jpg" width="80%" />
    </p>
 
 
@@ -244,13 +244,13 @@ In this section, you will create a custom AXI Stream based module to control the
 After adding both `XADC wizard` IP core, `AXI DMA` IP core, and `your custom AXI-Stream` IP core, run design automation and validate the design. If there are warnings about debouncer reset port, you can connect the debouncer `reset_n` port to processor system reset module `peripheral_aresetn` port and the warning will be gone. You can ignore the warning about unmatched bit width between XADC wizard and custom AXI stream module. The final block diagram should look like the figure below. After that you can generate the block design wrapper and start `synthesizing` the design.
 
 <p align="center">
-    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/91db9570a2c6f66e5b13f714534b07b04eb42133/03-digital-sensor/resources/final-bd.png" width="70%" />
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/209dea91f96f43acbdc4e2250f3a2eeb88decdfb/04-analog-sensor/resources/routed-bd.jpg" width="100%" />
 </p>
 
 Before running implementation and bitstream generation process, you need to change the `board pin mapping`, so that the AXI IIC IP core and AXI Quad SPI core inputs and outputs are mapped to correct pins. To change the pin mapping, click `open synthesized design` in the left menu and after synthesized design opens, click `window > I/O ports` option from toolbar.
 
 <p align="center">
-    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/91db9570a2c6f66e5b13f714534b07b04eb42133/03-digital-sensor/resources/final-bd.png" width="70%" />
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/209dea91f96f43acbdc4e2250f3a2eeb88decdfb/04-analog-sensor/resources/io-window.jpg" width="80%" />
 </p>
 
 In the I/O ports menu, under the `Scalar ports`, you need to set `VN` pin ports to pin `D18` on the board and `VP` ports to pin `E17`. You also need to change the I/O std setting to `LVCMOS33`, since the maximum input voltage for the pin is 3.3 V. After changing the pin mapping, save the constraint and start generating design bitstream.
@@ -262,7 +262,7 @@ In the I/O ports menu, under the `Scalar ports`, you need to set `VN` pin ports 
 After generating bitstream, you need to connect the sensor to PYNQ board before you can run and test the design. For this module, you need to connect sensor shield to PYNQ Arduino pin header as you did in the previous project.
 
 <p align="center">
-    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/91db9570a2c6f66e5b13f714534b07b04eb42133/03-digital-sensor/resources/sensor-no-shield.png" width="40%" />
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/209dea91f96f43acbdc4e2250f3a2eeb88decdfb/04-analog-sensor/resources/sensor-board.jpg" width="40%" />
 </p>
 Once you connect the sensors, export the bitstream file and block diagram file and upload them to the PYNQ board, you need to create a new notebook and write Python code to control the behavior of XADC and DMA module. 
 
@@ -372,7 +372,7 @@ while(1):
 After reading the data from CO sensor, you will get the data similar to figure below
 
 <p align="center">
-    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/91db9570a2c6f66e5b13f714534b07b04eb42133/03-digital-sensor/resources/sensor-no-shield.png" width="40%" />
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/209dea91f96f43acbdc4e2250f3a2eeb88decdfb/04-analog-sensor/resources/sensor-data.jpg" width="70%" />
 </p>
 
 From the figure above, you can see that the amplitude of both reading are different. Actually, it’s quite hard to test the sensor since you need to have pure CO gas to test the sensor functionality. For this project, if you don’t have access to such gas, you can just compare the sensor data with the XADC reading when the sensor is not connected to the board
@@ -389,34 +389,34 @@ For practice, you need to modify the block diagram to do following things:
 If you’re using `FIR compiler` IP core, you need to place the IP between your custom AXI-Stream module and AXI DMA. You can use the diagram below as a reference. 
 
 <p align="center">
-    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/91db9570a2c6f66e5b13f714534b07b04eb42133/03-digital-sensor/resources/sensor-no-shield.png" width="40%" />
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/209dea91f96f43acbdc4e2250f3a2eeb88decdfb/04-analog-sensor/resources/fir-bd.jpg" width="100%" />
 </p>
 
 You also need to configure FIR compiler IP core as shown in the figure below
 
 <p align="center">
-    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/91db9570a2c6f66e5b13f714534b07b04eb42133/03-digital-sensor/resources/sensor-no-shield.png" width="40%" />
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/209dea91f96f43acbdc4e2250f3a2eeb88decdfb/04-analog-sensor/resources/fir-coeff.jpg" width="70%" />
 </p>
 
-You can change the filter coefficient by replacing the value in the Coefficient Vector section. The filter coefficient can be obtained from online FIR filter design calculator by entering sampling frequency, passband frequency, and stopband frequency.
+You can change the filter coefficient by replacing the value in the Coefficient Vector section. The filter coefficient can be obtained from [`online FIR filter design calculator`](http://t-filter.engineerjs.com/) by entering sampling frequency, passband frequency, and stopband frequency.
 
 <p align="center">
-    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/91db9570a2c6f66e5b13f714534b07b04eb42133/03-digital-sensor/resources/sensor-no-shield.png" width="40%" />
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/209dea91f96f43acbdc4e2250f3a2eeb88decdfb/04-analog-sensor/resources/fir-coeff-gen.jpg" width="80%" />
 </p>
 
 You also need to change input and output data width of the FIR compiler block to match with XADC output data width. Otherwise, an error message will appear when you validate the design.
 
 <p align="center">
-    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/91db9570a2c6f66e5b13f714534b07b04eb42133/03-digital-sensor/resources/sensor-no-shield.png" width="40%" />
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/209dea91f96f43acbdc4e2250f3a2eeb88decdfb/04-analog-sensor/resources/fir-coeff-type.jpg" width="70%" />
 </p>
 
 Finally, you need to configure the AXI interface setting of the FIR compiler as shown in the figure below.
 
 <p align="center">
-    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/91db9570a2c6f66e5b13f714534b07b04eb42133/03-digital-sensor/resources/sensor-no-shield.png" width="40%" />
+    <img src="https://github.com/kaistseed/intro-to-xilinx-fpga/blob/209dea91f96f43acbdc4e2250f3a2eeb88decdfb/04-analog-sensor/resources/fir-axi-conf.jpg" width="70%" />
 </p>
 
-If the tutorial for filtering is not clear enough, you can take a look at this website ([**https://www.fpgadeveloper.com/2018/03/how-to-accelerate-a-python-function-with-pynq.html/**](https://www.fpgadeveloper.com/2018/03/how-to-accelerate-a-python-function-with-pynq.html/)). In that website, you’ll able to see a video about how to accelerate FIR filtering using FIR compiler IP block.
+If the tutorial for filtering is not clear enough, you can take a look at this [`FPGA tutorial website`](https://www.fpgadeveloper.com/2018/03/how-to-accelerate-a-python-function-with-pynq.html/). In that website, you’ll able to see a video about how to accelerate FIR filtering using FIR compiler IP block.
 
 
 
